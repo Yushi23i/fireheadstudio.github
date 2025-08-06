@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Русская Рулетка | Игра для двоих</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@300;400&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        /* --- Hero Section (барабан и вводный текст) --- */
+        #hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            overflow: hidden;
+            background-color: #000; /* Фон по умолчанию */
+        }
+        /* Стиль для видео-барабана */
+        #drum-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80vw;
+            max-width: 600px;
+            height: auto;
+            z-index: 1;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.3);
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: cover;
+            opacity: 1;
+        }
+        /* Контейнер для вводного текста */
+        #intro-text-container {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            width: 90%;
+            max-width: 800px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Центрируем элементы по горизонтали */
+        }
+        /* Стиль для вводного текста с печатной машинкой */
+        #intro-text {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.5rem;
+            color: #e0e0e0;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+            margin-bottom: 20px;
+            opacity: 0;
+            white-space: pre-line;
+        }
+        /* Стиль для основного заголовка */
+        #main-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: #ff3e3e;
+            text-shadow: 0 0 15px rgba(255, 62, 62, 0.8);
+            letter-spacing: 3px;
+            margin-top: 40px; /* Опускание на 1 строку ниже */
+            opacity: 0;
+            animation: titlePulse 3s infinite;
+        }
+        @keyframes titlePulse {
+            0% { text-shadow: 0 0 15px rgba(255, 62, 62, 0.8); }
+            50% { text-shadow: 0 0 25px rgba(255, 62, 62, 1), 0 0 35px rgba(255, 62, 62, 0.8); }
+            100% { text-shadow: 0 0 15px rgba(255, 62, 62, 0.8); }
+        }
+        /* --- Основной контент (второй фон) --- */
+        #content {
+            background: url('https://i.imgur.com/Hjrqtxx.png') repeat;
+            color: #e0e0e0;
+            font-family: 'Rajdhani', sans-serif;
+            line-height: 1.6;
+            position: relative;
+            padding: 40px 20px;
+            display: none; /* Скрыть изначально */
+        }
+        #content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: -1;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        header {
+            margin-bottom: 50px;
+        }
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #ff3e3e;
+            text-shadow: 0 0 10px rgba(255, 62, 62, 0.6);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .tagline {
+            font-size: 1.3rem;
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+        .game-type {
+            background: rgba(255, 62, 62, 0.2);
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            border: 1px solid #ff3e3e;
+            color: #ff9e9e;
+        }
+        main {
+            background: rgba(20, 20, 30, 0.7);
+            border-radius: 15px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 62, 62, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 25px;
+            text-shadow: 0 0 5px rgba(255, 62, 62, 0.4);
+        }
+        .rules {
+            text-align: left;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        .rules p {
+            margin-bottom: 15px;
+        }
+        .highlight {
+            color: #ff3e3e;
+            font-weight: bold;
+        }
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #ff3e3e, #c40000);
+            color: white;
+            padding: 15px 35px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 62, 62, 0.4);
+        }
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 62, 62, 0.6);
+        }
+        .download-btn i {
+            font-size: 1.4rem;
+        }
+        footer {
+            margin-top: 50px;
+            font-size: 0.95rem;
+            color: #777;
+        }
+        .social-links {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .social-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ff3e3e;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .social-link:hover {
+            color: #fff;
+        }
+        .social-icon {
+            font-size: 2rem;
+        }
+        /* Адаптация для мобильных */
+        @media (max-width: 768px) {
+            #intro-text {
+                font-size: 1.2rem;
+            }
+            #main-title {
+                font-size: 2.5rem;
+            }
+            #drum-video {
+                 width: 90vw;
+            }
+            .logo { font-size: 2.5rem; }
+            .tagline { font-size: 1.1rem; }
+            main { padding: 25px 15px; }
+            h2 { font-size: 1.7rem; }
+            .rules { font-size: 1rem; }
+            .download-btn { font-size: 1.1rem; padding: 12px 25px; }
+            .social-links { gap: 12px; }
+            .social-link { gap: 6px; font-size: 0.9rem; }
+            .social-icon { font-size: 1.5rem; }
+        }
+        @media (max-width: 480px) {
+            #intro-text {
+                font-size: 1rem;
+            }
+            #main-title {
+                font-size: 2rem;
+            }
+            #drum-video {
+                 width: 95vw;
+            }
+            .container { padding: 20px 15px; }
+            header { margin-bottom: 30px; }
+            .logo { font-size: 2rem; }
+            .tagline { font-size: 1rem; }
+            main { padding: 20px 12px; }
+            h2 { font-size: 1.5rem; }
+            .rules { font-size: 0.95rem; }
+            .rules p { margin-bottom: 10px; padding: 3px 8px; }
+            .download-btn { font-size: 1rem; padding: 10px 20px; }
+            .download-btn i { font-size: 1.2rem; }
+            footer { font-size: 0.85rem; margin-top: 30px; }
+            .social-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            .social-link { font-size: 0.9rem; gap: 8px; }
+            .social-icon { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section с барабаном и вводным текстом -->
+    <section id="hero">
+        <video id="drum-video" autoplay muted loop playsinline>
+            <source src="drum.mp4" type="video/mp4">
+            Ваш браузер не поддерживает видео.
+        </video>
+        <div id="intro-text-container">
+            <div id="intro-text"></div>
+            <h1 id="main-title">RUSSIAN ROULETTE</h1>
+        </div>
+    </section>
+    <!-- Основной контент с другим фоном -->
+    <section id="content">
+        <div class="container">
+            <header>
+                <div class="logo">РУССКАЯ РУЛЕТКА</div>
+                <div class="tagline">Похоже, вы потерялись, но я могу подсказать, где вы. Вы нашли игру...</div>
+                <div class="game-type">POINT & CLICK</div>
+            </header>
+            <main>
+                <h2>Игра для двоих</h2>
+                <div class="rules">
+                    <p>Русская Рулетка — это <span class="highlight">игра</span> на двоих, в которой можно выбрать победителя в более интересной форме.</p>
+                    <p><span class="highlight">ТОЛЬКО ВДВОЁМ:</span> Вам нужно положить ваше устройство на стол или стул, чтобы экран смотрел вверх. Два игрока должны сесть за стол или стоять напротив устройства с двух сторон так, чтобы дуло <span class="highlight">револьвера</span> не смотрело прямо на игрока. Если очередь игрока №1, игрок №2 не должен <span class="highlight">прикасаться</span> к устройству, пока не начнётся его очередь.</p>
+                    <p><span class="highlight">Настройка игры:</span> На столе лежит виртуальный <span class="highlight">револьвер</span>, который может вместить в себя максимум <span class="highlight">6 патронов</span>. Заряжается только <span class="highlight">1 патрон</span>. После перезарядки <span class="highlight-special" title="Крупье - человек, который раздает карты или управляет игрой.">крупье</span> должен крутануть барабан и положить <span class="highlight">револьвер</span> обратно, после чего <span class="highlight">игра начинается</span>.</p>
+                    <p><span class="highlight">Начало игры:</span> Игроки могут сами решить, кто будет стрелять первым, или могут просто бросить монетку.</p>
+                    <p><span class="highlight">Ход игрока:</span> Если игрок получил оружие, он должен поднести его к <span class="highlight">голове</span> и <span class="highlight">нажать курок</span>. Если <span class="highlight">револьвер</span> не выстрелил, можно выстрелить ещё раз или <span class="highlight">передать револьвер</span> следующему игроку.</p>
+                    <p><span class="highlight">Конец игры:</span> <span class="highlight">Игра</span> не закончится, пока <span class="highlight">револьвер</span> не заберёт одного из <span class="highlight">игроков</span>.</p>
+                </div>
+                <a href="russian-roulette.apk" class="download-btn" download id="download-btn" aria-label="Скачать игру Русская Рулетка APK">
+                    <i class="fas fa-download"></i> Скачать игру (APK)
+                </a>
+            </main>
+            <footer>
+                <p>Если есть вопросы, обращайтесь по этой почте: <a href="mailto:Fire.Head.Studio.Official@outlook.com" style="color: #ff3e3e;">Fire.Head.Studio.Official@outlook.com</a></p>
+                <div class="social-links">
+                    <a href="https://discord.com/invite/dVuKzmXV2k" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Присоединяйтесь к нашему Discord серверу">
+                        <i class="fab fa-discord social-icon"></i> Дискорд
+                    </a>
+                    <a href="https://t.me/FireHeadStudioOfficial" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Наш канал в Telegram">
+                        <i class="fab fa-telegram-plane social-icon"></i> Телеграм
+                    </a>
+                    <a href="https://www.youtube.com/@FireHeadstudioofficial" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Наш канал на YouTube">
+                        <i class="fab fa-youtube social-icon"></i> Ютуб
+                    </a>
+                </div>
+            </footer>
+        </div>
+    </section>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const heroSection = document.getElementById('hero');
+            const introTextElement = document.getElementById('intro-text');
+            const siteContent = document.getElementById('content');
+            // Текст для печатной машинки
+            const introText = "похоже вы потерялись, но я могу подсказать где вы...\nвы нашли игру...";
+            // Анимация текста "печать"
+            function typeWriter(text, i, fnCallback) {
+                if (i < (text.length)) {
+                    introTextElement.innerHTML = text.substring(0, i+1) + '<span aria-hidden="true"></span>';
+                    introTextElement.style.opacity = '1';
+                    setTimeout(function() {
+                        typeWriter(text, i + 1, fnCallback)
+                    }, 50);
+                }
+                else if (typeof fnCallback == 'function') {
+                    setTimeout(fnCallback, 700);
+                }
+            }
+            // Запуск анимации - начать сразу БЕЗ задержки
+            typeWriter(introText, 0, function(){
+               // Показываем заголовок
+               const titleElement = document.getElementById('main-title');
+               titleElement.style.opacity = '1';
+               // Через паузу показываем основной контент
+               setTimeout(() => {
+                   siteContent.style.display = 'block';
+                   siteContent.style.opacity = '0';
+                   setTimeout(() => {
+                       siteContent.style.opacity = '1';
+                   }, 50);
+               }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>
